@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kallistusohjaus demo</title>
+</head>
+<body>
+  <h1>Kallista puhelinta!</h1>
+  <div id="info"></div>
+  <script>
+    function handleOrientation(event) {
+      var beta = event.beta;   // front-to-back kallistus [-180,180]
+      var gamma = event.gamma; // left-to-right kallistus [-90,90]
+      document.getElementById('info').innerHTML = 
+        "Beta (ylös/alas): " + beta.toFixed(2) + "<br>" +
+        "Gamma (vasen/oikea): " + gamma.toFixed(2);
+      // Näillä arvoilla voit ohjata peliä
+    }
+
+    // iOS 13+ vaatii luvan sensoreiden käyttöön
+    function askPermission() {
+      if (typeof DeviceOrientationEvent !== 'undefined' && 
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(function(permissionState) {
+          if (permissionState === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation);
+          }
+        }).catch(console.error);
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation);
+      }
+    }
+
+    // Kysy lupa napilla
+    var btn = document.createElement("button");
+    btn.innerText = "Salli kallistusanturi";
+    btn.onclick = askPermission;
+    document.body.appendChild(btn);
+  </script>
+</body>
+</html>
